@@ -25,7 +25,7 @@ namespace PasswordCreatorVersion2.ProgrammProperties
             }
 
 
-            if (passwordLength != "")
+            if (passwordStartLength != "")
             {
                 if (Int32.Parse(passwordStartLength) < 1 ||
                     (Int32.Parse(passwordStartLength) > Int32.Parse(passwordLength)))

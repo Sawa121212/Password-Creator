@@ -61,7 +61,7 @@ namespace PasswordCreatorVersion2
 
             var res = properties.CheckProperties(passwordLength, passwordStartLength, englishUpKeysIsOn,
                 englishDownsKeyIsOn, numberIsOn);
-            //Generateing start = new Generateing();
+            //Generator start = new Generator();
             if (res == "Без ошибок")
             {
                 GenerationButton.IsEnabled = false;
@@ -149,11 +149,7 @@ namespace PasswordCreatorVersion2
                     MainPassword += "A";
                 }
             }
-
-
-            // }
-
-
+            //
             ExpotToDocument(passwordPackList);
 
         }
@@ -165,10 +161,7 @@ namespace PasswordCreatorVersion2
             PasswordBox.Items.MoveCurrentToLast();
             PasswordBox.ScrollIntoView(PasswordBox.Items.CurrentItem);
         }
-
-
-
-
+        
         private void ExpotToDocument(List<string> passList)
         {
             string writePath = @"d:\1.txt";
@@ -195,7 +188,7 @@ namespace PasswordCreatorVersion2
                     MessageBoxOptions.DefaultDesktopOnly);
             }
         }
-
+        
         /// <summary>
         /// Начать генерацию.
         /// </summary>
