@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -21,7 +22,7 @@ namespace PasswordCreatorVersion2
         }
 
         // A-Z
-        public static readonly int _englishUpKeyPointStart = 65;
+        public static readonly int _englishUpKeyPointStart = 65;    // начало и конец индексов символов из ASCII таблицы
         public static readonly int _englishUpKeyPointEnd = 90;
 
         // a-z
@@ -32,7 +33,9 @@ namespace PasswordCreatorVersion2
         public static readonly int _numberPointStart = 48;
         public static readonly int _numberPointEnd = 57;
 
-        public static string MainPassword;
+        public static string MainPassword;              // пароль полностью
+        public static List<string> PasswordPackList;    // лист паролей
+        public static string[] Arr;                     // пароль посимвольно по элементам
 
         private int _sdf;
 
@@ -79,12 +82,25 @@ namespace PasswordCreatorVersion2
             }
         }
 
+        public static int LastItemIndex;
         public void GenerateingPass(string passwordLength, string passwordStartLength, bool englishUpKeysIsOn,
             bool englishDownKeysIsOn, bool numberIsOn)
         {
-            List<string> passwordPackList = new List<string>();
             int passLength = Int32.Parse(passwordLength);
             int iterationCount = 0;
+
+            //List<string> passwordPackList = new List<string>();
+
+            MainPassword = "";
+            //string[] arr = new String [passLength];
+
+            for (int i = 0; i < passLength; i++)
+            {
+                Arr[i] = "";
+            }
+
+            string lastItem = Arr[Arr.Length - 1];
+            LastItemIndex = passLength - 1;
 
             if (numberIsOn)
             {
@@ -101,28 +117,24 @@ namespace PasswordCreatorVersion2
                 iterationCount += _englishUpKeyPointEnd - _englishUpKeyPointStart + 1;
             }
 
-            MainPassword = "";
-            // for (int i = 0; i < iterationCount; i++)
-            // {
-            for (int t = 0; t < passLength; t++)
+            //////////////////////////////////////////////////////////////////////////
+            for (int index = passLength; index >= 0; index--)    // длина пароля
             {
                 if (numberIsOn)
                 {
                     for (int xt = 0; xt < _numberPointEnd - _numberPointStart + 1; xt++)
                     {
-                        AddKey.AddNumber(MainPassword);
-                        passwordPackList.Add(MainPassword);
-                        AddToListBox();
+                        AddKey.AddNumber(lastItem, index);
+                        AddToPassword(Arr);
                     }
-
                 }
 
                 if (englishDownKeysIsOn)
                 {
                     for (int xt = 0; xt < _englishDownKeyPointEnd - _englishDownKeyPointStart + 1; xt++)
                     {
-                        AddKey.AddEnglishDownKey(MainPassword);
-                        passwordPackList.Add(MainPassword);
+                        AddKey.AddEnglishDownKey(lastItem, LastItemIndex);
+                        PasswordPackList.Add(MainPassword);
                         AddToListBox();
                     }
                 }
@@ -131,11 +143,12 @@ namespace PasswordCreatorVersion2
                 {
                     for (int xt = 0; xt < _englishUpKeyPointEnd - _englishUpKeyPointStart + 1; xt++)
                     {
-                        AddKey.AddEnglishUpKey(MainPassword);
-                        passwordPackList.Add(MainPassword);
+                        AddKey.AddEnglishUpKey(lastItem, LastItemIndex);
+                        PasswordPackList.Add(MainPassword);
                         AddToListBox();
                     }
                 }
+
                 if (numberIsOn)
                 {
                     MainPassword += "0";
@@ -150,8 +163,21 @@ namespace PasswordCreatorVersion2
                 }
             }
             //
-            ExpotToDocument(passwordPackList);
+            ExpotToDocument(PasswordPackList);
 
+        }
+
+        private void AddToPassword(string[] arr)
+        {
+            var p = "";
+            foreach (string charPass in arr)
+            {
+                p += charPass;
+            }
+
+            MainPassword = p;
+            PasswordPackList.Add(MainPassword);
+            AddToListBox();
         }
 
         public void AddToListBox()
