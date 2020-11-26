@@ -4,7 +4,7 @@
     {
         public static bool AddNumber(string item, int index)
         {
-            var res = AddNewKey(item, index, _englishDownKeyPointStart, _englishDownKeyPointEnd, '0');
+            var res = AddNewKey(item, index, _numberPointStart, _numberPointEnd, '0');
             return res;
         }
 

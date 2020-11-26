@@ -48,17 +48,15 @@
 
             <CheckBox Grid.Row="2" Grid.Column="1" Content="A-Z" Name="EnglishUpKeysIsOn" 
                       VerticalAlignment="Center" HorizontalAlignment="Left"
-                      IsThreeState="False" IsChecked="True"/>
+                      IsThreeState="False" />
 
             <CheckBox Grid.Row="3" Grid.Column="1" Content="a-z" Name="EnglishDownsKeysIsOn" 
                       VerticalAlignment="Bottom" HorizontalAlignment="Left"
-                      IsChecked="{Binding EnglishDownsKeysIsOnChanged, UpdateSourceTrigger=PropertyChanged}"
                       IsThreeState="False"/>
 
             <CheckBox Grid.Row="4" Grid.Column="1" Content="0-9" Name="NumberIsOn" 
                       VerticalAlignment="Center" HorizontalAlignment="Left"
-                      IsChecked="{Binding NumberIsOnChanged, UpdateSourceTrigger=PropertyChanged}"
-                      IsThreeState="False"/>
+                      IsThreeState="False" IsChecked="True"/>
 
             <TextBlock Grid.Row="5" Grid.Column="0"
                        Text="Стартовая длина пароля:"
