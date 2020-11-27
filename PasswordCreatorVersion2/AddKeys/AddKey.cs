@@ -54,5 +54,31 @@
             }
             return true;
         }
+
+        /// <summary>
+        /// проверяет элемент, если пустой, то проверяем каким символом заменить
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="numberIsOn"></param>
+        /// <param name="englishDownKeysIsOn"></param>
+        /// <param name="englishUpKeysIsOn"></param>
+        public void AddNewStartElement(int index, bool numberIsOn, bool englishDownKeysIsOn, bool englishUpKeysIsOn)
+        {
+            if (numberIsOn)
+            {
+                Arr[index] = "0";
+                AddToListPassword(Arr);
+            }
+            else if (englishDownKeysIsOn)
+            {
+                Arr[index] = "a";
+                AddToListPassword(Arr);
+            }
+            else if (englishUpKeysIsOn)
+            {
+                Arr[index] = "A";
+                AddToListPassword(Arr);
+            }
+        }
     }
 }
