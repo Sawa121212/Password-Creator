@@ -40,7 +40,7 @@
                     }
                     else
                     {
-                        ChangeKey.ToChar('A', index);
+                        ChangeKey.ToChar(defaultChar, index);
                     }
                 }
                 else
@@ -58,26 +58,30 @@
         /// <summary>
         /// проверяет элемент, если пустой, то проверяем каким символом заменить
         /// </summary>
-        /// <param name="index"></param>
+        /// <param name="passwordLength"></param>
+        /// <param name="passwordStartLength"></param>
         /// <param name="numberIsOn"></param>
         /// <param name="englishDownKeysIsOn"></param>
         /// <param name="englishUpKeysIsOn"></param>
-        public void AddNewStartElement(int index, bool numberIsOn, bool englishDownKeysIsOn, bool englishUpKeysIsOn)
+        public void AddNewStartElement(int passwordLength, int passwordStartLength, bool numberIsOn, bool englishDownKeysIsOn, bool englishUpKeysIsOn)
         {
-            if (numberIsOn)
+            for (int index = passwordLength; index > passwordStartLength; index--)
             {
-                Arr[index] = "0";
-                AddToListPassword(Arr);
-            }
-            else if (englishDownKeysIsOn)
-            {
-                Arr[index] = "a";
-                AddToListPassword(Arr);
-            }
-            else if (englishUpKeysIsOn)
-            {
-                Arr[index] = "A";
-                AddToListPassword(Arr);
+                if (numberIsOn)
+                {
+                    Arr[index] = "0";
+                    AddToListPassword(Arr);
+                }
+                else if (englishDownKeysIsOn)
+                {
+                    Arr[index] = "a";
+                    AddToListPassword(Arr);
+                }
+                else if (englishUpKeysIsOn)
+                {
+                    Arr[index] = "A";
+                    AddToListPassword(Arr);
+                }
             }
         }
     }

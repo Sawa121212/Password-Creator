@@ -83,12 +83,13 @@ namespace PasswordCreatorVersion2
             }
         }
 
-        public static int LastItemIndex;
+        public static int LastElementIndex;    // индекс последнего элемента из массива Arr
         public void GenerateingPass(string passwordLength, string passwordStartLength, bool englishUpKeysIsOn,
                                         bool englishDownKeysIsOn, bool numberIsOn)
         {
             PasswordBox.Items.Clear();                      // очищаем ListBox
             int passLength = Int32.Parse(passwordLength);   // длина пароля
+            int passStartLength = Int32.Parse(passwordStartLength);   // длина стартового пароля
 
 
             Arr = new String[passLength];           // массив элементов(символов)
@@ -102,7 +103,7 @@ namespace PasswordCreatorVersion2
                 Arr[i] = "";                        // заполняем массив элементов пустотой
             }
 
-            LastItemIndex = passLength - 1;         // индекс последнего элемента
+            LastElementIndex = passLength - 1;         // индекс последнего элемента
 
             int numberIterationCount = 0;           // кол-во цифр
             int englishDownKeyIterationCount = 0;   // кол-во Англ. букв с нижним регистром
@@ -112,99 +113,58 @@ namespace PasswordCreatorVersion2
             if (englishDownKeysIsOn) { englishDownKeyIterationCount += _englishDownKeyPointEnd - _englishDownKeyPointStart + 1; }
             if (englishUpKeysIsOn) { englishUpKeyIterationCount += _englishUpKeyPointEnd - _englishUpKeyPointStart + 1; }
 
-            //////////////////////////////////////////////////////////////////////////
-            for (int index = LastItemIndex; index >= 0; index--)    // длина пароля
+            int iterationCount = 1;
+            for (int i = 0; i < LastElementIndex; i++)
             {
-                // добавляем стартовый элемент(символ)
-                addKey.AddNewStartElement(index, numberIsOn, englishDownKeysIsOn, englishUpKeysIsOn);
+                iterationCount *= numberIterationCount + englishDownKeyIterationCount + englishUpKeyIterationCount;
+            }
 
-                // проверяем, нужно ли след. элемент сменить на следующий
+            // добавляем стартовый элементы(символы)
+            addKey.AddNewStartElement(LastElementIndex, passStartLength, numberIsOn, englishDownKeysIsOn, englishUpKeysIsOn);
+            //////////////////////////////////////////////////////////////////////////
+            //for (int index = LastElementIndex; index >= 0; index--)    // длина пароля
+            for (int index = iterationCount; index >= 0; index--)    // длина пароля
+            {
+                // проверяем, 
+                AddNextElement.CheckNextElement(numberIsOn, englishDownKeysIsOn, englishUpKeysIsOn);
+
+                // проверяем, нужно ли сменить на следующий элемент(символ)
                 TakeNextElement.ChangeNextElement(numberIsOn, englishDownKeysIsOn, englishUpKeysIsOn);
 
                 if (numberIsOn)
                 {
+                    Arr[LastElementIndex] = "";
                     for (int xt = 0; xt < numberIterationCount; xt++)
                     {
-                        string lastItem = Arr[Arr.Length - 1];
-                        AddKey.AddNumber(lastItem, index);
+                        AddKey.AddNumber(Arr[LastElementIndex], LastElementIndex);
                         AddToListPassword(Arr);
                     }
-                    Arr[Arr.Length - 1] = "";
                 }
-
                 if (englishDownKeysIsOn)
                 {
+                    Arr[LastElementIndex] = "";
                     for (int xt = 0; xt < englishDownKeyIterationCount + 1; xt++)
                     {
-                        string lastItem = Arr[Arr.Length - 1];
-                        AddKey.AddEnglishDownKey(lastItem, LastItemIndex);
+                        AddKey.AddEnglishDownKey(Arr[LastElementIndex], LastElementIndex);
                         AddToListPassword(Arr);
                     }
                 }
 
                 if (englishUpKeysIsOn)
                 {
+                    Arr[LastElementIndex] = "";
                     for (int xt = 0; xt < englishUpKeyIterationCount + 1; xt++)
                     {
-                        string lastItem = Arr[Arr.Length - 1];
-                        AddKey.AddEnglishUpKey(lastItem, LastItemIndex);
+                        AddKey.AddEnglishUpKey(Arr[LastElementIndex], LastElementIndex);
                         AddToListPassword(Arr);
                     }
                 }
             }
             //
-            ExpotToDocument(PasswordPackList);
+            //ExpotToDocument(PasswordPackList);    // экспорт паролей в документ
             ClearAll();
 
         }
-
-        // private void TakeNextElement(bool numberIsOn, bool englishDownKeysIsOn, bool englishUpKeysIsOn)
-        // {
-        //     for (int i = Arr.Length; i >= 0; i--)
-        //     {
-        //         string lastItem = Arr[i];
-        //         var itemChar = lastItem[0];
-        //
-        //         if (numberIsOn)
-        //         {
-        //             if ((int)itemChar == _numberPointEnd)
-        //             {
-        //                 if (englishDownKeysIsOn)
-        //                 {
-        //                     if (i - 1 >= 0)
-        //                     {
-        //                         AddKey.AddEnglishDownKey(Arr[i - 1], i - 1);
-        //                     }
-        //                 }
-        //
-        //
-        //             }
-        //         }
-        //         else if (englishDownKeysIsOn)
-        //         {
-        //             if ((int)itemChar == _numberPointEnd)
-        //             {
-        //                 if (i - 1 >= 0)
-        //                 {
-        //                     AddKey.AddEnglishDownKey(Arr[i - 1], i - 1);
-        //                 }
-        //             }
-        //         }
-        //         else if (englishUpKeysIsOn)
-        //         {
-        //             if ((int)itemChar == _numberPointEnd)
-        //             {
-        //                 if (i - 1 >= 0)
-        //                 {
-        //                     AddKey.AddEnglishUpKey(Arr[i - 1], i - 1);
-        //                 }
-        //             }
-        //         }
-        //
-        //
-        //
-        //     }
-        // }
 
         internal void AddToListPassword(string[] arr)
         {
@@ -214,9 +174,12 @@ namespace PasswordCreatorVersion2
                 p += charPass;
             }
 
-            MainPassword = p;
-            PasswordPackList.Add(MainPassword);
-            AddToListBox();
+            if (MainPassword != p)
+            {
+                MainPassword = p;
+                PasswordPackList.Add(MainPassword);
+                AddToListBox();
+            }
         }
 
         public void AddToListBox()
@@ -227,7 +190,7 @@ namespace PasswordCreatorVersion2
             PasswordBox.ScrollIntoView(PasswordBox.Items.CurrentItem);
         }
 
-        private void ExpotToDocument(List<string> passList)
+        private static void ExpotToDocument(List<string> passList)
         {
             string writePath = @"d:\1.txt";
             try

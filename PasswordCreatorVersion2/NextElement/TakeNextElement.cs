@@ -13,6 +13,12 @@ namespace PasswordCreatorVersion2.NextElement
         private static bool _englishDownKeysIsOn;
         private static bool _englishUpKeysIsOn;
 
+        /// <summary>
+        /// Проверка, нужно ли сменить на следующий элемент(символ)
+        /// </summary>
+        /// <param name="numberIsOn"></param>
+        /// <param name="englishDownKeysIsOn"></param>
+        /// <param name="englishUpKeysIsOn"></param>
         public static void ChangeNextElement(bool numberIsOn, bool englishDownKeysIsOn, bool englishUpKeysIsOn)
         {
             _numberIsOn = numberIsOn;
@@ -33,20 +39,6 @@ namespace PasswordCreatorVersion2.NextElement
                 {
                     var res = CheckNumberKey(true, itemChar, i);
                     if (res) break;
-                    // if ((int)itemChar == _numberPointEnd)
-                    // {
-                    //     // if (englishDownKeysIsOn)
-                    //     // {
-                    //     //     CheckEnglishDownKey(englishDownKeysIsOn, itemChar, i);
-                    //     // }
-                    //     if (englishUpKeysIsOn)
-                    //     {
-                    //         if (i - 1 >= 0)
-                    //         {
-                    //             AddKey.AddEnglishUpKey(Arr[i - 1], i - 1);
-                    //         }
-                    //     }
-                    // }
                 }
                 if (_englishDownKeysIsOn)
                 {
