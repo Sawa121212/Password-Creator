@@ -45,7 +45,8 @@
                 }
                 else
                 {
-                    return false;   // если элемент последний элемент, значит с данным диапазоном закончили
+                    //return false;   // если элемент последний элемент, значит с данным диапазоном закончили
+                    ChangeKey.ToChar(defaultChar, index);   // ставим стартовый элемент
                 }
             }
             else
@@ -65,22 +66,27 @@
         /// <param name="englishUpKeysIsOn"></param>
         public void AddNewStartElement(int passwordLength, int passwordStartLength, bool numberIsOn, bool englishDownKeysIsOn, bool englishUpKeysIsOn)
         {
-            for (int index = passwordLength; index > passwordStartLength; index--)
+            //var pasStartLength = passwordStartLength == passwordLength ? -1 : passwordStartLength;
+            //for (int index = passwordLength - 1; index > pasStartLength; index--)
+            for (int count = passwordStartLength, index = passwordLength - 1; count > 0; index-- , count--)
             {
-                if (numberIsOn)
+                if (index != 0)
                 {
-                    Arr[index] = "0";
-                    AddToListPassword(Arr);
-                }
-                else if (englishDownKeysIsOn)
-                {
-                    Arr[index] = "a";
-                    AddToListPassword(Arr);
-                }
-                else if (englishUpKeysIsOn)
-                {
-                    Arr[index] = "A";
-                    AddToListPassword(Arr);
+                    if (numberIsOn)
+                    {
+                        Arr[index] = "0";
+                        AddToListPassword(Arr);
+                    }
+                    else if (englishDownKeysIsOn)
+                    {
+                        Arr[index] = "a";
+                        AddToListPassword(Arr);
+                    }
+                    else if (englishUpKeysIsOn)
+                    {
+                        Arr[index] = "A";
+                        AddToListPassword(Arr);
+                    }
                 }
             }
         }

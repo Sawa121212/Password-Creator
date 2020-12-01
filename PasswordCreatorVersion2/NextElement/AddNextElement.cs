@@ -19,37 +19,46 @@ namespace PasswordCreatorVersion2.NextElement
             _englishDownKeysIsOn = englishDownKeysIsOn;
             _englishUpKeysIsOn = englishUpKeysIsOn;
 
-            for (int i = Arr.Length - 1; i >= 0; i--)
+            //for (int i = Arr.Length > 1 ? Arr.Length - 2 : Arr.Length - 1; i >= 0; i--)
+            //int count = 0;
+            if (Arr.Length != 0 && Arr.Length > 1)
             {
-                var stringElement = Arr[i];
-                if (stringElement == "" || stringElement == " ")
+                //count = Arr.Length > 1 ? Arr.Length - 2 : Arr.Length - 1;
+
+                for (int i = Arr.Length-1; i >= 0 ; i--)
                 {
-                    continue;
-                }
-                else
-                {
-                    var charElement = (char)stringElement[0];
-                    if ((int)charElement == _numberPointEnd)
+                    if (i - 1 >= 0)
                     {
-                        if (!_englishDownKeysIsOn && !_englishUpKeysIsOn)
+                        var stringElement = Arr[i];
+                        if (stringElement != "" && stringElement != " ")
                         {
-                            AddElement(i, 1);
+                            //     continue;
+                            // }
+                            // else
+                            // {
+                            var charElement = (char)stringElement[0];
+                            if ((int)charElement == _numberPointEnd)
+                            {
+                                if (!_englishDownKeysIsOn && !_englishUpKeysIsOn)
+                                {
+                                    AddElement(i-1, 1);
+                                }
+                            }
+
+                            if ((int)charElement == _englishDownKeyPointEnd)
+                            {
+                                if (!_englishUpKeysIsOn)
+                                {
+                                    AddElement(i-1, 2);
+                                }
+                            }
+
+                            if ((int)charElement == _englishUpKeyPointEnd)
+                            {
+                                AddElement(i-1, 3);
+
+                            }
                         }
-
-                    }
-
-                    if ((int)charElement == _englishDownKeyPointEnd)
-                    {
-                        if (!_englishUpKeysIsOn)
-                        {
-                            AddElement(i, 2);
-                        }
-                    }
-
-                    if ((int)charElement == _englishUpKeyPointEnd)
-                    {
-                        AddElement(i, 3);
-
                     }
                 }
             }
@@ -57,7 +66,7 @@ namespace PasswordCreatorVersion2.NextElement
 
         private static void AddElement(int i, int operation)
         {
-            var index = i > 0 ? i - 1 : 0;
+            var index = i;// > 0 ? i - 1 : 0;
 
             switch (operation)
             {
