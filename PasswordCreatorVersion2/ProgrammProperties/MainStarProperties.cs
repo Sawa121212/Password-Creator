@@ -9,7 +9,7 @@ namespace PasswordCreatorVersion2.ProgrammProperties
         {
             if (!englishUpKeysIsOn && !englishDownsKeysIsOn && !numberIsOn)
             {
-                return "Выберите регистр";
+                return "- Выберите регистр - ";
             }
 
             if (passwordLength != "")
