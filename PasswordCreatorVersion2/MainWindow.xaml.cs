@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Threading;
@@ -54,7 +55,7 @@ namespace PasswordCreatorVersion2
             Application.Current.Shutdown();
         }
 
-        private void Generate(object sender, RoutedEventArgs e)
+        private async void Generate(object sender, RoutedEventArgs e)
         {
             MainStarProperties properties = new MainStarProperties();
 
@@ -79,8 +80,15 @@ namespace PasswordCreatorVersion2
                 sw.Start();
                 dt.Start();
 
-                GeneratingPass(passwordLength, passwordStartLength, englishUpKeysIsOn,
-                    englishDownsKeyIsOn, numberIsOn);
+                await Task.Run(async () => await GeneratingPass(passwordLength, passwordStartLength, englishUpKeysIsOn,
+                    englishDownsKeyIsOn, numberIsOn));
+                if (sw.IsRunning)
+                {
+                    sw.Stop();
+                }
+                ExportToDocument(PasswordPackList); // экспорт паролей в документ
+                GenerationButton.IsEnabled = true;
+                StatusBarInfo.Content = "- Генерация завершена -";
             }
             else
             {
@@ -90,70 +98,66 @@ namespace PasswordCreatorVersion2
 
 
 
-        public void GeneratingPass(string passwordLength, string passwordStartLength, bool englishUpKeysIsOn,
+        public async Task GeneratingPass(string passwordLength, string passwordStartLength, bool englishUpKeysIsOn,
             bool englishDownKeysIsOn, bool numberIsOn)
         {
-            int passLength = Int32.Parse(passwordLength);           // длина пароля
-            int passStartLength = Int32.Parse(passwordStartLength); // длина стартового пароля
-
-            Arr = new Int32[passLength];                            // массив элементов(символов)
-            PasswordPackList = new List<string>();                  // лист паролей
-            MainPassword = "";                                      // пароль полностью
-
-            for (int i = 0; i < passLength; i++)
+            try
             {
-                Arr[i] = -1;                                         // заполняем массив элементов пустотой
-            }
+                int passLength = Int32.Parse(passwordLength);           // длина пароля
+                int passStartLength = Int32.Parse(passwordStartLength); // длина стартового пароля
 
-            LastElementIndex = passLength - 1;                      // индекс последнего элемента
+                Arr = new Int32[passLength];                            // массив элементов(символов)
+                PasswordPackList = new List<string>();                  // лист паролей
+                MainPassword = "";                                      // пароль полностью
 
-            // загрузка новой библиотеки символов
-            var keyLibrary = KeyLibrary.AddNewKeyLibrary(numberIsOn, englishDownKeysIsOn, englishUpKeysIsOn);
-            KeysLibrary = new Char[keyLibrary.Length];              // массив новых элементов(символов)
-
-            for (int index = 0; index < keyLibrary.Length; index++)
-            {
-                KeysLibrary[index] = keyLibrary[index];
-            }
-            EndElement = keyLibrary.Length - 1;
-
-            // высчитывает количество итераций
-            var iterationCount = 0.0;
-            for (int i = 1, xs = passStartLength; i <= passLength; i++, xs--)
-            {
-                if (xs <= 1)
+                for (int i = 0; i < passLength - passStartLength; i++)
                 {
-                    iterationCount += Math.Pow(keyLibrary.Length, i);
-                }
-            }
-
-            iterationCount /= keyLibrary.Length;
-
-            //////////////////////////////////////////////////////////////////////////
-            // iterationCount = 11 при длине 2 только с цифрами
-            for (int index = (int)iterationCount; index > 0; index--)   // длина пароля
-            {
-                for (var i = 0; i < keyLibrary.Length; i++)
-                {
-                    Arr[LastElementIndex] = i;
-                    AddToListPassword(Arr);
+                    Arr[i] = -1;                                         // заполняем массив элементов пустотой
                 }
 
-                // проверяем, нужно ли сменить на следующий элемент(символ)
-                //ToDo Не вызывать ChangeNextElement если это последняя итерация
-                ChangeKey.ChangeNextElement(LastElementIndex);
+                LastElementIndex = passLength - 1;                      // индекс последнего элемента
+
+                // загрузка новой библиотеки символов
+                var keyLibrary = KeyLibrary.AddNewKeyLibrary(numberIsOn, englishDownKeysIsOn, englishUpKeysIsOn);
+                KeysLibrary = new Char[keyLibrary.Length];              // массив новых элементов(символов)
+
+                for (int index = 0; index < keyLibrary.Length; index++)
+                {
+                    KeysLibrary[index] = keyLibrary[index];
+                }
+                EndElement = keyLibrary.Length - 1;
+
+                // высчитывает количество итераций
+                var iterationCount = 0.0;
+                for (int i = 1, xs = passStartLength; i <= passLength; i++, xs--)
+                {
+                    if (xs <= 1)
+                    {
+                        iterationCount += Math.Pow(keyLibrary.Length, i);
+                    }
+                }
+
+                iterationCount /= keyLibrary.Length;
+
+                //////////////////////////////////////////////////////////////////////////
+                // iterationCount = 11 при длине 2 только с цифрами
+                for (long index = (long)iterationCount; index > 0; index--)   // длина пароля
+                {
+                    for (var i = 0; i < keyLibrary.Length; i++)
+                    {
+                        Arr[LastElementIndex] = i;
+                        AddToListPassword(Arr);
+                    }
+
+                    // проверяем, нужно ли сменить на следующий элемент(символ)
+                    // Не вызывать ChangeNextElement если это последняя итерация
+                    ChangeKey.ChangeNextElement(LastElementIndex);
+                }
             }
-
-            ExportToDocument(PasswordPackList); // экспорт паролей в документ
-            GenerationButton.IsEnabled = true;
-            StatusBarInfo.Content = "- Генерация завершена -";
-
-            if (sw.IsRunning)
+            catch (Exception e)
             {
-                sw.Stop();
+                StatusBarInfo.Content = "Ошибка: " + e.Message;
             }
-
-            ClearAll();
         }
 
         internal void AddToListPassword(int[] arr)
@@ -198,12 +202,6 @@ namespace PasswordCreatorVersion2
                 StatusBarInfo.Content = "Ошибка: " + e.Message;
             }
         }
-
-        private static void ClearAll()
-        {
-            MainPassword = "";
-        }
-
 
         // секундомер    
         private void dt_Tick(object sender, EventArgs e)
