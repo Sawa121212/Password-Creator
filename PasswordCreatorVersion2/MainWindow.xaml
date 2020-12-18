@@ -9,18 +9,13 @@
         mc:Ignorable="d"
         Title="Password Creator" Height="450" Width="600" MinHeight="300" MinWidth="550">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="350" />
-            <ColumnDefinition Width="5"  />
-            <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="50" />
             <RowDefinition Height="50" />
         </Grid.RowDefinitions>
 
-        <Grid Grid.Column="0"  Grid.Row="0" Margin="10">
+        <Grid Grid.Column="0" Grid.Row="0" Margin="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -36,12 +31,13 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
+
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*"  />
+                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
@@ -49,32 +45,31 @@
                        Text="Раскладка:"
                        VerticalAlignment="Center" Margin="5" />
 
-            <CheckBox Grid.Row="2" Grid.Column="1" Content="A-Z" Name="EnglishUpKeysIsOn" 
+            <CheckBox Grid.Row="1" Grid.Column="1" Content="A-Z" Name="EnglishUpKeysIsOn"
                       VerticalAlignment="Center" HorizontalAlignment="Left"
                       IsThreeState="False" />
 
-            <CheckBox Grid.Row="3" Grid.Column="1" Content="a-z" Name="EnglishDownsKeysIsOn" 
+            <CheckBox Grid.Row="2" Grid.Column="1" Content="a-z" Name="EnglishDownsKeysIsOn"
                       VerticalAlignment="Bottom" HorizontalAlignment="Left"
                       IsThreeState="False" />
 
-            <CheckBox Grid.Row="4" Grid.Column="1" Content="0-9" Name="NumberIsOn" 
+            <CheckBox Grid.Row="3" Grid.Column="1" Content="0-9" Name="NumberIsOn"
                       VerticalAlignment="Center" HorizontalAlignment="Left"
-                      IsThreeState="False" IsChecked="True"/>
+                      IsThreeState="False" IsChecked="True" />
 
-            <TextBlock Grid.Row="5" Grid.Column="0"
+            <TextBlock Grid.Row="4" Grid.Column="0"
                        Text="Стартовая длина пароля:"
                        VerticalAlignment="Center" Margin="5" />
-            <TextBox Grid.Row="5" Grid.Column="1" Grid.ColumnSpan="2"
+            <TextBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2"
                      Name="PasswordStartLengthBox"
                      Height="25" Margin="5"
                      VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Stretch"
-                     Text="1">
-            </TextBox>
+                     Text="1" />
 
-            <TextBlock Grid.Row="9" Grid.Column="0"
+            <TextBlock Grid.Row="6" Grid.Column="0"
                        Text="Длина пароля:"
                        VerticalAlignment="Center" Margin="5" />
-            <TextBox Grid.Row="9" Grid.Column="1" Grid.ColumnSpan="2"
+            <TextBox Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2"
                      Name="PasswordLengthBox"
                      VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Stretch"
                      Height="25" Margin="5" Text="2">
@@ -82,73 +77,29 @@
                     <window:KeyWindowBehavior />
                 </b:Interaction.Behaviors>
             </TextBox>
-            <StackPanel Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="2" 
-                        Orientation="Horizontal" HorizontalAlignment="Right" 
+            <StackPanel Grid.Row="7" Grid.Column="0" Grid.ColumnSpan="2"
+                        Orientation="Horizontal" HorizontalAlignment="Right"
                         Margin="10,0,10,10">
                 <Button Content="Generate"
                         Name="GenerationButton"
                         ToolTip="Генерировать"
                         Width="100" Height="30" Margin="10"
-                        Click ="Generate"
-                        Command="{Binding Path= Generate, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}">
-                </Button>
+                        Click="Generate"
+                        Command="{Binding Path= Generate, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
                 <Button Content="Закрыть"
                         ToolTip="Закрыть программу"
                         Width="100" Height="30" Margin="3"
                         HorizontalAlignment="Right"
-                        Click="CloseCommand">
-                </Button>
-                <Button Content="test"
-                        ToolTip="test"
-                        Width="80" Height="30" Margin="3"
-                        HorizontalAlignment="Right"
-                        Click="TestAddToList">
-                </Button>
+                        Click="CloseCommand" />
             </StackPanel>
-            <TextBlock Grid.Row="11"  Grid.Column="0" Grid.ColumnSpan="2" Margin="5" >Timer</TextBlock>
-            <TextBlock Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="2" 
+            <TextBlock Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" Margin="5">Timer</TextBlock>
+            <TextBlock Grid.Row="8" Grid.Column="1" Grid.ColumnSpan="2"
                        x:Name="clocktxtblock" Background="BlanchedAlmond"
-                       Margin="5" >
-            </TextBlock>
-        </Grid>
+                       Margin="5" />
 
-        <Grid Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Margin="10">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            <TextBox Grid.Row="0"
-                     Background="Black"
-                     Foreground="GreenYellow"
-                     FontWeight="Bold"
-                     VerticalAlignment="Center" VerticalContentAlignment="Center"
-                     HorizontalContentAlignment="Center">
-                Code
-            </TextBox>
-            <ListBox Grid.Row="1" Name="PasswordBox"
-                     Background="#111111"
-                     Foreground="LightGreen"
-                     Margin="0,0,0,0"
-                     VerticalAlignment="Top">
-            </ListBox>
-        </Grid>
-        
-        <Grid Grid.Row="1" Grid.Column="0" Margin="10" Background="BlanchedAlmond">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="50" />
-                <RowDefinition Height="50" />
-                <RowDefinition Height="50" />
-            </Grid.RowDefinitions>
-            <!--<Button x:Name="startbtn" Margin="38,137,350,126" Background="SkyBlue" Content="Start" FontSize="30" Click="startbtn_Click" ></Button>
-            <Button x:Name="stopbtn" Margin="200,137,190,126" Background="SkyBlue" Content="Stop" FontSize="30" Click="stopbtn_Click" ></Button>
-            <Button x:Name="resetbtn" Margin="360,137,28,126" Background="SkyBlue" Content="Reset" FontSize="30" Click="resetbtn_Click" ></Button>-->
-        </Grid>
-
-        <Grid Grid.Row="2" Grid.Column="0" Margin="10">
-            <StatusBar Grid.Column="0" FlowDirection="LeftToRight">
-                <StatusBarItem HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" 
-                               Name="StatusBarInfo"  Content="">
-                </StatusBarItem>
+            <StatusBar Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2"
+                       FlowDirection="LeftToRight">
+                <StatusBarItem Height="100" Name="StatusBarInfo" Content="" />
             </StatusBar>
         </Grid>
     </Grid>

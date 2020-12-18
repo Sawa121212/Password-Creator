@@ -42,14 +42,6 @@ namespace PasswordCreatorVersion2
 
         private int _sdf;
 
-        private void TestAddToList(object sender, RoutedEventArgs routedEventArgs)
-        {
-            PasswordBox.Items.Add("item: " + MainPassword + _sdf);
-            PasswordBox.Items.MoveCurrentToLast();
-            PasswordBox.ScrollIntoView(PasswordBox.Items.CurrentItem);
-            _sdf++;
-        }
-
         private void CloseCommand(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
@@ -70,25 +62,38 @@ namespace PasswordCreatorVersion2
 
             // секундомер
             sw.Reset();
-            clocktxtblock.Text = "00:00:00";
+            clocktxtblock.Text = "00:00:00:00";
 
             if (res == "Без ошибок")
             {
-                GenerationButton.IsEnabled = false;
-                StatusBarInfo.Content = "- Идет генерация -";
-
-                sw.Start();
-                dt.Start();
-
-                await Task.Run(async () => await GeneratingPass(passwordLength, passwordStartLength, englishUpKeysIsOn,
-                    englishDownsKeyIsOn, numberIsOn));
-                if (sw.IsRunning)
+                try
                 {
-                    sw.Stop();
+                    GenerationButton.IsEnabled = false;
+                    StatusBarInfo.Content = "- Идет генерация -";
+
+                    sw.Start();
+                    dt.Start();
+
+                    await Task.Run(async () => await GeneratingPass(passwordLength, passwordStartLength,
+                        englishUpKeysIsOn,
+                        englishDownsKeyIsOn, numberIsOn));
+                   
+                    //ExportToDocument(PasswordPackList); // экспорт паролей в документ
+
+                    StatusBarInfo.Content = "- Генерация завершена -";
                 }
-                ExportToDocument(PasswordPackList); // экспорт паролей в документ
-                GenerationButton.IsEnabled = true;
-                StatusBarInfo.Content = "- Генерация завершена -";
+                catch (Exception exp)
+                {
+                    StatusBarInfo.Content = $"Ошибка: {exp}";
+                }
+                finally
+                {
+                    if (sw.IsRunning)
+                    {
+                        sw.Stop();
+                    }
+                    GenerationButton.IsEnabled = true;
+                }
             }
             else
             {
@@ -97,7 +102,7 @@ namespace PasswordCreatorVersion2
         }
 
 
-
+        private static int FileCount =1;
         public async Task GeneratingPass(string passwordLength, string passwordStartLength, bool englishUpKeysIsOn,
             bool englishDownKeysIsOn, bool numberIsOn)
         {
@@ -149,10 +154,17 @@ namespace PasswordCreatorVersion2
                         AddToListPassword(Arr);
                     }
 
+                    if (PasswordPackList.Count >= 5000000)
+                    {
+                        ExportToDocument(PasswordPackList); // экспорт паролей в документ
+                        FileCount++;
+                    }
+
                     // проверяем, нужно ли сменить на следующий элемент(символ)
-                    // Не вызывать ChangeNextElement если это последняя итерация
                     ChangeKey.ChangeNextElement(LastElementIndex);
                 }
+                
+                ExportToDocument(PasswordPackList); // экспорт паролей в документ
             }
             catch (Exception e)
             {
@@ -178,24 +190,23 @@ namespace PasswordCreatorVersion2
 
             if (MainPassword == p) return;
             MainPassword = p;
-            Debug.WriteLine(MainPassword);
+            //Debug.WriteLine(MainPassword);
             PasswordPackList.Add(MainPassword);
         }
 
         private void ExportToDocument(IEnumerable<string> passList)
         {
-            const string writePath = @"d:\1.txt";
+            string writePath = @"d:\Passwords\Passwords - " + FileCount.ToString() + ".txt";
             try
             {
-                using (var streamWriter = new StreamWriter(writePath, false, System.Text.Encoding.Default))
+                using (var streamWriter = new StreamWriter(writePath, append: true))
                 {
                     foreach (var pass in passList)
                     {
                         streamWriter.WriteLine(pass);
                     }
                 }
-
-                StatusBarInfo.Content = "- Запись выполнена успешно -";
+                PasswordPackList.Clear();
             }
             catch (Exception e)
             {
@@ -208,7 +219,7 @@ namespace PasswordCreatorVersion2
         {
             if (!sw.IsRunning) return;
             var ts = sw.Elapsed;
-            currentTime = $"{ts.Minutes:00}:{ts.Seconds:00}:{ts.Milliseconds / 10:00}";
+            currentTime = $"{ts.Days:00}:{ts.Hours:00}:{ts.Minutes:00}:{ts.Seconds:00}";
             clocktxtblock.Text = currentTime;
         }
     }
